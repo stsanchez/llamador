@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Endpoint para registrar pacientes
 app.post('/register', async (req, res) => {
-    const { nombre, apellido, dni, horario } = req.body;
+    const { nombre, apellido, dni, horario, especialidad, nro_consultorio } = req.body; // Incluye los nuevos campos
     try {
         // Obtener la fecha actual
         const fechaActual = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
@@ -35,12 +35,12 @@ app.post('/register', async (req, res) => {
 
         // Realizar la consulta para insertar el paciente
         await pool.query(
-            'INSERT INTO pacientes (nombre, apellido, dni, horario) VALUES ($1, $2, $3, $4)',
-            [nombre, apellido, dni, fechaHora]
+            'INSERT INTO pacientes (nombre, apellido, dni, horario, especialidad, nro_consultorio) VALUES ($1, $2, $3, $4, $5, $6)',
+            [nombre, apellido, dni, fechaHora, especialidad, nro_consultorio]
         );
 
         // Emitir el evento a todos los clientes conectados
-        io.emit('nuevo_paciente', { nombre, apellido });
+        io.emit('nuevo_paciente', { nombre, apellido, especialidad, nro_consultorio });
 
         // Redirigir de vuelta al formulario de registro
         res.redirect('/register.html');
@@ -57,22 +57,25 @@ app.post('/register', async (req, res) => {
 app.get('/llamar/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await pool.query('SELECT nombre, apellido FROM pacientes WHERE id = $1', [id]);
+        const result = await pool.query('SELECT nombre, apellido, especialidad, nro_consultorio FROM pacientes WHERE id = $1', [id]);
         const paciente = result.rows[0];
-        io.emit('llamada', paciente); // Emitir el evento de llamada a todos los clientes
+        io.emit('llamada', paciente); // Emitir evento con los datos del paciente
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al registrar paciente');
+        res.status(500).send('Error al llamar al paciente');
     }
 });
+
+
+
+
 
 
 // Endpoint para obtener pacientes que no han sido atendidos
 app.get('/pacientes', async (req, res) => {
     try {
-        const query = 'SELECT * FROM pacientes WHERE atendido = FALSE ORDER BY horario ASC';
-        console.log('Ejecutando consulta:', query); // Para verificar la consulta
+        const query = 'SELECT * FROM pacientes WHERE atendido = FALSE ORDER BY horario ASC';        
         const result = await pool.query(query);
         res.json(result.rows);
     } catch (err) {

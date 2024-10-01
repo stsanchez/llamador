@@ -139,35 +139,36 @@
                     });
                 });
 
-            // Manejar la notificación de llamada
-            socket.on('llamada', (data) => {
-                // Crear un nuevo elemento de notificación
-                const notificationElement = document.createElement('div');
-                notificationElement.classList.add('notification');
-                notificationElement.textContent = `${data.nombre} ${data.apellido}: consultorio 3`;
-                notificationsContainer.prepend(notificationElement);
-                notificationElement.style.display = 'block';
+// Manejar la notificación de llamada
+socket.on('llamada', (data) => {
+    // Crear un nuevo elemento de notificación
+    const notificationElement = document.createElement('div');
+    notificationElement.classList.add('notification');
+    notificationElement.innerHTML = `${data.nombre} ${data.apellido}<br>${data.especialidad}: Consultorio ${data.nro_consultorio}`; // Añadir especialidad con salto de línea
+    notificationsContainer.prepend(notificationElement);
+    notificationElement.style.display = 'block';
 
-                // Reproducir el sonido de notificación
-                if (notificationSound.dataset.enabled === 'true') {
-                    notificationSound.play().catch(error => {
-                        console.error('Error al reproducir el sonido:', error);
-                    });
-                }
+    // Reproducir el sonido de notificación
+    if (notificationSound.dataset.enabled === 'true') {
+        notificationSound.play().catch(error => {
+            console.error('Error al reproducir el sonido:', error);
+        });
+    }
 
-                // Limitar a un máximo de 5 notificaciones
-                if (notificationsContainer.children.length > 5) {
-                    notificationsContainer.removeChild(notificationsContainer.lastChild);
-                }
+    // Limitar a un máximo de 5 notificaciones
+    if (notificationsContainer.children.length > 5) {
+        notificationsContainer.removeChild(notificationsContainer.lastChild);
+    }
 
-                // Eliminar al paciente de la lista de espera
-                const patientItems = patientsList.querySelectorAll('li');
-                patientItems.forEach(item => {
-                    if (item.textContent.includes(`${data.nombre} ${data.apellido}`)) {
-                        patientsList.removeChild(item);
-                    }
-                });
-            });
+    // Eliminar al paciente de la lista de espera
+    const patientItems = patientsList.querySelectorAll('li');
+    patientItems.forEach(item => {
+        if (item.textContent.includes(`${data.nombre} ${data.apellido}`)) {
+            patientsList.removeChild(item);
+        }
+    });
+});
+
 
             // Habilitar el sonido
             enableSoundButton.addEventListener('click', () => {
