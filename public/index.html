@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vista de Pacientes</title>
     <style>
         body {
@@ -20,7 +22,7 @@
             list-style-type: none;
             padding: 0;
             width: 350px; /* Aumenta el ancho si es necesario */
-            margin: 0 auto;
+            margin: 20px auto; /* Agrega margen superior */
         }
 
         #pacientes-lista li {
@@ -99,11 +101,46 @@
             opacity: 0;
             transition: opacity 1s ease-out;
         }
+
+        .control-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0; /* Espacio vertical */
+        }
+
+        #consultorio-select {
+            margin-right: 10px; /* Espacio entre el select y el botón */
+        }
+
+        #consultar-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff; /* Azul para el botón de consultar */
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #consultar-btn:hover {
+            background-color: #0056b3; /* Azul oscuro para hover */
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h1>Pacientes</h1>
+
+    <div class="control-container">
+        <select id="consultorio-select">
+            <option value="">Seleccione Consultorio</option>
+            <option value="1">Consultorio 1</option>
+            <option value="2">Consultorio 2</option>
+            <option value="3">Consultorio 3</option>
+            <!-- Agrega más opciones según sea necesario -->
+        </select>
+        <button id="consultar-btn">Consultar</button>
+    </div>
+
     <ul id="pacientes-lista"></ul>
     <div id="notification"></div>
 
@@ -111,6 +148,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             const socket = io();
             const notificationElement = document.getElementById('notification');
+            const consultarBtn = document.getElementById('consultar-btn');
+            const consultorioSelect = document.getElementById('consultorio-select');
 
             // Manejar la notificación de llamada
             socket.on('llamada', (data) => {
@@ -146,48 +185,55 @@
                 });
             };
 
-            // Cargar lista de pacientes
-            fetch('/pacientes')
-                .then(response => response.json())
-                .then(pacientes => {
-                    const lista = document.getElementById('pacientes-lista');
-                    pacientes.forEach(paciente => {
-                        const item = document.createElement('li');
-                        item.setAttribute('data-id', paciente.id);
+            // Función para consultar pacientes por consultorio
+            const consultarPacientes = () => {
+                const nroConsultorio = consultorioSelect.value; // Obtener el número de consultorio seleccionado
+                fetch(`/pacientes?nro_consultorio=${nroConsultorio}`)
+                    .then(response => response.json())
+                    .then(pacientes => {
+                        const lista = document.getElementById('pacientes-lista');
+                        lista.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+                        pacientes.forEach(paciente => {
+                            const item = document.createElement('li');
+                            item.setAttribute('data-id', paciente.id);
 
-                        // Extraer solo la hora del campo 'horario'
-                        const horario = new Date(paciente.horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            // Extraer solo la hora del campo 'horario'
+                            const horario = new Date(paciente.horario).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        // Crear un contenedor para la información del paciente
-                        const info = document.createElement('div');
-                        info.textContent = `${paciente.nombre} ${paciente.apellido} - ${horario}`;
-                        info.className = 'info'; // Añadir clase para la información
+                            // Crear un contenedor para la información del paciente
+                            const info = document.createElement('div');
+                            info.textContent = `${paciente.nombre} ${paciente.apellido} - ${horario}`;
+                            info.className = 'info'; // Añadir clase para la información
 
-                        // Crear un contenedor para los botones
-                        const btnContainer = document.createElement('div');
-                        btnContainer.className = 'btn-container';
+                            // Crear un contenedor para los botones
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'btn-container';
 
-                        const botonLlamar = document.createElement('button');
-                        botonLlamar.textContent = 'Llamar';
-                        botonLlamar.className = 'btn btn-llamar';
-                        botonLlamar.onclick = () => window.llamarPaciente(paciente.id);
+                            const botonLlamar = document.createElement('button');
+                            botonLlamar.textContent = 'Llamar';
+                            botonLlamar.className = 'btn btn-llamar';
+                            botonLlamar.onclick = () => window.llamarPaciente(paciente.id);
 
-                        const botonAtendido = document.createElement('button');
-                        botonAtendido.textContent = 'Atendido';
-                        botonAtendido.className = 'btn btn-atendido';
-                        botonAtendido.onclick = () => window.marcarAtendido(paciente.id);
+                            const botonAtendido = document.createElement('button');
+                            botonAtendido.textContent = 'Atendido';
+                            botonAtendido.className = 'btn btn-atendido';
+                            botonAtendido.onclick = () => window.marcarAtendido(paciente.id);
 
-                        // Añadir botones al contenedor
-                        btnContainer.appendChild(botonLlamar);
-                        btnContainer.appendChild(botonAtendido);
+                            // Añadir botones al contenedor
+                            btnContainer.appendChild(botonLlamar);
+                            btnContainer.appendChild(botonAtendido);
 
-                        // Añadir elementos al item
-                        item.appendChild(info);
-                        item.appendChild(btnContainer);
+                            // Añadir elementos al item
+                            item.appendChild(info);
+                            item.appendChild(btnContainer);
 
-                        lista.appendChild(item);
+                            lista.appendChild(item);
+                        });
                     });
-                });
+            };
+
+            // Agregar evento al botón de consultar
+            consultarBtn.addEventListener('click', consultarPacientes);
         });
     </script>
 </body>

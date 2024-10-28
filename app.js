@@ -73,7 +73,7 @@ app.get('/llamar/:id', async (req, res) => {
 
 
 // Endpoint para obtener pacientes que no han sido atendidos
-app.get('/pacientes', async (req, res) => {
+/*app.get('/pacientes', async (req, res) => {
     try {
         const query = 'SELECT * FROM pacientes WHERE atendido = FALSE ORDER BY horario ASC';        
         const result = await pool.query(query);
@@ -83,6 +83,32 @@ app.get('/pacientes', async (req, res) => {
         res.status(500).send('Error al obtener pacientes');
     }
 });
+*/
+
+app.get('/pacientes', async (req, res) => {
+    const { nro_consultorio } = req.query; // Obtener el número de consultorio de los parámetros de consulta
+    try {
+        // Si nro_consultorio está definido, filtrar por consultorio, de lo contrario mostrar todos los pacientes
+        let query = 'SELECT * FROM pacientes WHERE atendido = FALSE';
+        //const values = [];
+
+        if (nro_consultorio) {
+            query += ' AND nro_consultorio = $1 ORDER BY horario ASC';
+            //values.push(nro_consultorio); // Agregar el nro_consultorio a los valores
+        } else {
+            query += ' ORDER BY horario ASC'; // Si no hay consultorio, solo ordenar
+        }
+
+        const result = await pool.query(query, values); // Pasar los valores a la consulta
+        console.log('Pacientes obtenidos:', result.rows); // Para depuración
+        res.json(result.rows); // Enviar los pacientes como respuesta
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al obtener pacientes');
+    }
+});
+
+
 
 // Endpoint para marcar un paciente como atendido
 app.patch('/atendido/:id', async (req, res) => { // Cambia PUT a PATCH aquí
