@@ -50,6 +50,23 @@ app.post('/register', async (req, res) => {
     }
 });
 
+// Endpoint para obtener información del paciente por DNI
+app.get('/paciente', async (req, res) => {
+    const { dni } = req.query;
+    try {
+        const result = await pool.query('SELECT nombre, apellido FROM pacientes WHERE dni = $1', [dni]);
+        if (result.rows.length > 0) {
+            // Si el paciente existe, devolver su nombre y apellido
+            res.json({ success: true, nombre: result.rows[0].nombre, apellido: result.rows[0].apellido });
+        } else {
+            // Si no existe, devolver un mensaje de error
+            res.json({ success: false, message: 'Paciente no encontrado' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Error en el servidor' });
+    }
+});
 
 
 // Endpoint para llamar a un paciente
@@ -88,13 +105,13 @@ app.get('/llamar/:id', async (req, res) => {
 app.get('/pacientes', async (req, res) => {
     const { nro_consultorio } = req.query; // Obtener el número de consultorio de los parámetros de consulta
     try {
-        // Si nro_consultorio está definido, filtrar por consultorio, de lo contrario mostrar todos los pacientes
+        // Inicializar el query y los valores dependiendo si se pasa o no nro_consultorio
         let query = 'SELECT * FROM pacientes WHERE atendido = FALSE';
-        //const values = [];
+        let values = [];
 
         if (nro_consultorio) {
             query += ' AND nro_consultorio = $1 ORDER BY horario ASC';
-            //values.push(nro_consultorio); // Agregar el nro_consultorio a los valores
+            values = [nro_consultorio]; // Asignar el nro_consultorio a los valores
         } else {
             query += ' ORDER BY horario ASC'; // Si no hay consultorio, solo ordenar
         }
@@ -107,6 +124,7 @@ app.get('/pacientes', async (req, res) => {
         res.status(500).send('Error al obtener pacientes');
     }
 });
+
 
 
 
