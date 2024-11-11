@@ -4,131 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Pacientes</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        #container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            max-width: 600px;
-            width: 100%;
-        }
-        #header {
-            width: 100%;
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            padding: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        #logo {
-            max-height: 60px;
-        }
-        h1 {
-            text-align: center;
-            color: #007BFF;
-            margin-bottom: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            font-size: 1em;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    <script>
-        // Función para buscar al paciente por DNI y autocompletar nombre y apellido
-        async function buscarPaciente() {
-            const dni = document.getElementById("dni").value;
-
-            if (dni) { // Solo busca si el campo DNI tiene algún valor
-                try {
-                    const response = await fetch(`/paciente?dni=${dni}`);
-                    const data = await response.json();
-                    if (data.success) {
-                        // Autocompletar los campos de nombre y apellido
-                        document.getElementById("nombre").value = data.nombre;
-                        document.getElementById("apellido").value = data.apellido;
-                    } else {
-                        // Limpia los campos si no hay coincidencias
-                        document.getElementById("nombre").value = '';
-                        document.getElementById("apellido").value = '';
-                        alert('Paciente no encontrado');
-                    }
-                } catch (error) {
-                    console.error('Error al buscar paciente:', error);
-                }
-            }
-        }
-
-        // Función para actualizar el número de consultorio según la especialidad
-        function actualizarConsultorio() {
-            const especialidad = document.getElementById("especialidad").value;
-            const consultorioInput = document.getElementById("nro_consultorio");
-            
-            // Asignar el número de consultorio según la especialidad seleccionada
-            switch (especialidad) {
-                case "Traumatologia":
-                    consultorioInput.value = 1;
-                    break;
-                case "Clinico":
-                    consultorioInput.value = 2;
-                    break;
-                case "Ginecologia":
-                    consultorioInput.value = 3;
-                    break;
-                case "Guardia espontanea":
-                    consultorioInput.value = 4;
-                    break;
-                default:
-                    consultorioInput.value = ""; // Limpia el campo si no hay selección
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="./css/register.css">
+    
 </head>
 <body>
-    <div id="header">
-        <img id="logo" src="logo_emer.jpeg" alt="Logo de la Empresa">
+    <div class="contenedor-logo">
+        <img id="logo" src="./images/logo_emer.jpeg" alt="Logo de la Empresa">
     </div>
     <div id="container">
         <h1>Registrar Paciente</h1>
@@ -161,5 +42,6 @@
             <button type="submit">Registrar</button>
         </form>
     </div>
+    <script src="./js/register.js"></script>
 </body>
 </html>

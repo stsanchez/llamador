@@ -86,22 +86,6 @@ app.get('/llamar/:id', async (req, res) => {
 
 
 
-
-
-
-// Endpoint para obtener pacientes que no han sido atendidos
-/*app.get('/pacientes', async (req, res) => {
-    try {
-        const query = 'SELECT * FROM pacientes WHERE atendido = FALSE ORDER BY horario ASC';        
-        const result = await pool.query(query);
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error al obtener pacientes');
-    }
-});
-*/
-
 app.get('/pacientes', async (req, res) => {
     const { nro_consultorio } = req.query; // Obtener el número de consultorio de los parámetros de consulta
     try {
@@ -129,7 +113,7 @@ app.get('/pacientes', async (req, res) => {
 
 
 // Endpoint para marcar un paciente como atendido
-app.patch('/atendido/:id', async (req, res) => { // Cambia PUT a PATCH aquí
+/*app.patch('/atendido/:id', async (req, res) => { // Cambia PUT a PATCH aquí
     const { id } = req.params;
     try {
         // Actualizar el campo 'atendido' a TRUE para el paciente con el ID dado
@@ -143,7 +127,27 @@ app.patch('/atendido/:id', async (req, res) => { // Cambia PUT a PATCH aquí
         console.error(err);
         res.status(500).send('Error al actualizar paciente');
     }
+});*/
+app.patch('/atendido/:id', async (req, res) => {
+    const { id } = req.params;
+    const { motivo } = req.body; // Obtener el motivo del cuerpo de la solicitud
+    try {
+        // Actualizar el campo 'atendido' a TRUE y el campo 'motivo'
+        await pool.query(
+            'UPDATE pacientes SET atendido = TRUE, motivo = $1 WHERE id = $2',
+            [motivo, id]
+        );
+
+        // Emitir un evento para actualizar la lista de pacientes en tiempo real
+        io.emit('actualizar_lista');
+
+        res.status(200).send(`Paciente actualizado como ${motivo}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al actualizar paciente');
+    }
 });
+
 
 
 // Configuración del Socket.IO

@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #007bff;
+}
+
+#pacientes-lista {
+    list-style-type: none;
+    padding: 0;
+    width: 350px; /* Aumenta el ancho si es necesario */
+    margin: 20px auto; /* Agrega margen superior */
+}
+
+#pacientes-lista li {
+    background-color: #fff;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    overflow: hidden; /* Oculta el desbordamiento si hay demasiado contenido */
+    position: relative; /* Para usar el posicionamiento relativo */
+}
+
+#pacientes-lista .info {
+    flex: 1; /* Ocupa el espacio restante */
+    margin-right: 10px; /* Espacio entre la información y los botones */
+    white-space: nowrap; /* Evita que el texto se ajuste a varias líneas */
+    overflow: hidden; /* Oculta el desbordamiento */
+    text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
+}
+
+#pacientes-lista .btn-container {
+    display: flex;
+    gap: 5px; /* Espacio entre los botones */
+}
+
+#pacientes-lista .btn {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap; /* Evita que el texto se ajuste a varias líneas */
+}
+
+#pacientes-lista .btn-llamar {
+    background-color: #007bff; /* Azul para llamadas */
+}
+
+#pacientes-lista .btn-llamar:hover {
+    background-color: #0056b3; /* Azul oscuro para hover */
+}
+
+#pacientes-lista .btn-atendido {
+    background-color: #28a745; /* Verde para atendido */
+}
+
+#pacientes-lista .btn-atendido:hover {
+    background-color: #1e7e34; /* Verde oscuro para hover */
+}
+
+#pacientes-lista .btn-no-atendido {
+    background-color: #dc3545; /* Rojo para no atendido */
+}
+
+#pacientes-lista .btn-no-atendido:hover {
+    background-color: #c82333; /* Rojo oscuro para hover */
+}
+
+#notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.control-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0; /* Espacio vertical */
+}
+
+#consultorio-select {
+    margin-right: 10px; /* Espacio entre el select y el botón */
+}
+
+#consultar-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff; /* Azul para el botón de consultar */
+    color: #fff;
+    cursor: pointer;
+}
+
+#consultar-btn:hover {
+    background-color: #0056b3; /* Azul oscuro para hover */
+}
+
+/* Asegúrate de que el contenedor de #logo tenga esta clase */
+/* Asegúrate de que el contenedor de #logo tenga esta clase */
+.contenedor-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Opcional, para centrar verticalmente */
+}
+
+#logo {
+    max-height: 60px;
+}
