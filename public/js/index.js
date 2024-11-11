@@ -98,3 +98,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Agregar evento al botón de consultar
     consultarBtn.addEventListener('click', consultarPacientes);
 });
+
+// Función para marcar a un paciente como atendido o no atendido
+// Función para marcar a un paciente como atendido o no atendido
+window.marcarAtendido = (id, motivo) => {
+    console.log(`Enviando motivo: ${motivo}`); // Verificar si el valor es correcto
+    fetch(`/atendido/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ motivo }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => console.error('Error al enviar la solicitud:', error));
+};

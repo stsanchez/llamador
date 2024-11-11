@@ -109,38 +109,28 @@ app.get('/pacientes', async (req, res) => {
     }
 });
 
+app.use(express.json()); // Agrega esta línea si no la tienes
 
-
-
-// Endpoint para marcar un paciente como atendido
-/*app.patch('/atendido/:id', async (req, res) => { // Cambia PUT a PATCH aquí
-    const { id } = req.params;
-    try {
-        // Actualizar el campo 'atendido' a TRUE para el paciente con el ID dado
-        await pool.query('UPDATE pacientes SET atendido = TRUE WHERE id = $1', [id]);
-
-        // Emitir un evento para actualizar la lista de pacientes en tiempo real
-        io.emit('actualizar_lista');
-
-        res.status(200).send('Paciente actualizado como atendido');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error al actualizar paciente');
-    }
-});*/
 app.patch('/atendido/:id', async (req, res) => {
     const { id } = req.params;
-    const { motivo } = req.body; // Obtener el motivo del cuerpo de la solicitud
+    const { motivo } = req.body; // Obtener el motivo del cuerpo de la solicitud (ATENDIDO o NO ATENDIDO)
+
+    // Validar que el motivo sea uno de los valores esperados
+    if (motivo !== 'ATENDIDO' && motivo !== 'NO ATENDIDO') {
+        return res.status(400).send('Motivo no válido. Debe ser "ATENDIDO" o "NO ATENDIDO".');
+    }
+
     try {
-        // Actualizar el campo 'atendido' a TRUE y el campo 'motivo'
+        // Actualizar el paciente en la base de datos, estableciendo 'atendido' a TRUE y el campo 'motivo'
         await pool.query(
             'UPDATE pacientes SET atendido = TRUE, motivo = $1 WHERE id = $2',
-            [motivo, id]
+            [motivo, id]  // Inserta el valor de motivo (ATENDIDO o NO ATENDIDO)
         );
 
         // Emitir un evento para actualizar la lista de pacientes en tiempo real
         io.emit('actualizar_lista');
 
+        // Responder al cliente con el mensaje de éxito
         res.status(200).send(`Paciente actualizado como ${motivo}`);
     } catch (err) {
         console.error(err);
