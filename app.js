@@ -21,9 +21,16 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
 // Endpoint para registrar pacientes
+// Endpoint para registrar pacientes
 app.post('/register', async (req, res) => {
     const { nombre, apellido, dni, horario, especialidad, nro_consultorio } = req.body; // Incluye los nuevos campos
     try {
+        // Convertir los campos a mayúsculas
+        const nombreMayus = nombre.toUpperCase();
+        const apellidoMayus = apellido.toUpperCase();
+        const dniMayus = dni.toUpperCase();
+        const especialidadMayus = especialidad.toUpperCase();
+
         // Obtener la fecha actual
         const fechaActual = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
 
@@ -36,11 +43,11 @@ app.post('/register', async (req, res) => {
         // Realizar la consulta para insertar el paciente
         await pool.query(
             'INSERT INTO pacientes (nombre, apellido, dni, horario, especialidad, nro_consultorio) VALUES ($1, $2, $3, $4, $5, $6)',
-            [nombre, apellido, dni, fechaHora, especialidad, nro_consultorio]
+            [nombreMayus, apellidoMayus, dniMayus, fechaHora, especialidadMayus, nro_consultorio]
         );
 
         // Emitir el evento a todos los clientes conectados
-        io.emit('nuevo_paciente', { nombre, apellido, especialidad, nro_consultorio });
+        io.emit('nuevo_paciente', { nombre: nombreMayus, apellido: apellidoMayus, especialidad: especialidadMayus, nro_consultorio });
 
         // Redirigir de vuelta al formulario de registro
         res.redirect('/register.html');
@@ -49,6 +56,7 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Error al registrar paciente');
     }
 });
+
 
 // Endpoint para obtener información del paciente por DNI
 app.get('/paciente', async (req, res) => {

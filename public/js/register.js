@@ -24,7 +24,7 @@
         }
 
         // Función para actualizar el número de consultorio según la especialidad
-        function actualizarConsultorio() {
+        /*function actualizarConsultorio() {
             const especialidad = document.getElementById("especialidad").value;
             const consultorioInput = document.getElementById("nro_consultorio");
             
@@ -46,4 +46,4 @@
                     consultorioInput.value = ""; // Limpia el campo si no hay selección
             }
         }
- 
+ */
