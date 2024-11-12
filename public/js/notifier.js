@@ -23,7 +23,7 @@ socket.on('llamada', (data) => {
     // Crear un nuevo elemento de notificación
     const notificationElement = document.createElement('div');
     notificationElement.classList.add('notification');
-    notificationElement.innerHTML = `${data.nombre} ${data.apellido}<br>${data.especialidad}: Consultorio ${data.nro_consultorio}`; // Añadir especialidad con salto de línea
+    notificationElement.innerHTML = `${data.nombre} ${data.apellido}<br>${data.especialidad}: CONSULTORIO ${data.nro_consultorio}`; // Añadir especialidad con salto de línea
     notificationsContainer.prepend(notificationElement);
     notificationElement.style.display = 'block';
 
