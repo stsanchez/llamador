@@ -19,29 +19,30 @@ h1 {
 }
 
 #pacientes-lista li {
+    display: flex;
+    flex-direction: column; /* Cambia la dirección para que los botones se coloquen debajo */
+    align-items: flex-start;
     background-color: #fff;
     margin: 10px 0;
     padding: 10px;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    overflow: hidden; /* Oculta el desbordamiento si hay demasiado contenido */
-    position: relative; /* Para usar el posicionamiento relativo */
+    overflow: hidden;
+    position: relative;
 }
 
 #pacientes-lista .info {
-    flex: 1; /* Ocupa el espacio restante */
-    margin-right: 10px; /* Espacio entre la información y los botones */
-    white-space: nowrap; /* Evita que el texto se ajuste a varias líneas */
-    overflow: hidden; /* Oculta el desbordamiento */
-    text-overflow: ellipsis; /* Muestra '...' si el texto es demasiado largo */
+    width: 100%; /* Asegura que la info ocupe todo el ancho */
+    margin-bottom: 10px; /* Añade espacio entre la info y los botones */
+    white-space: normal; /* Permite que el texto haga un salto de línea si es necesario */
 }
 
 #pacientes-lista .btn-container {
     display: flex;
-    gap: 5px; /* Espacio entre los botones */
+    gap: 5px;
+    flex-wrap: wrap; /* Permite que los botones se ajusten a la siguiente línea si es necesario */
 }
+
 
 #pacientes-lista .btn {
     border: none;
