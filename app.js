@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// Configuración de la conexión a la base de datos PostgreSQL
+// Configuración de la conexión a la base de datos PostgreSQL aslkjd
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
