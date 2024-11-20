@@ -29,7 +29,7 @@ const formatearFechaHora = (horario) => {
     return `${fechaActual} ${hora}`;
 };
 
-// Endpoint para registrar pacientes
+
 // Endpoint para registrar pacientes
 app.post('/register', async (req, res) => {
     const { nombre, apellido, dni, horario, especialidad, nro_consultorio } = req.body;

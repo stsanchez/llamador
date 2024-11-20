@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             data.forEach(patient => {
                 const li = document.createElement('li');
-                li.setAttribute('data-id', patient.id); // Agregar ID como atributo
-                li.textContent = `${patient.nombre} ${patient.apellido}`;
+                li.setAttribute('data-id', patient.id);
+                li.textContent = `${patient.nombre} ${patient.apellido} - ${patient.especialidad}`;
                 patientsList.appendChild(li);
             });
         });
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Escuchar el evento para nuevo paciente
     socket.on('nuevo_paciente', (data) => {
         const li = document.createElement('li');
-        li.setAttribute('data-id', data.id); // Usar ID del paciente
-        li.textContent = `${data.nombre} ${data.apellido}`;
+        li.setAttribute('data-id', data.id);
+        li.textContent = `${data.nombre} ${data.apellido} - ${data.especialidad}`;
         patientsList.appendChild(li);
     });
 
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationsContainer.removeChild(notificationsContainer.lastChild);
         }
 
+        // Eliminar paciente de la lista de espera
         const patientItems = patientsList.querySelectorAll('li');
         patientItems.forEach(item => {
             if (item.textContent.includes(`${data.nombre} ${data.apellido}`)) {

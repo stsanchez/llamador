@@ -47,3 +47,23 @@
             }
         }
  */
+// Función para establecer la fecha actual como valor predeterminado en el campo datetime-local
+document.addEventListener("DOMContentLoaded", () => {
+    const horarioInput = document.getElementById("horario");
+
+    // Obtener la fecha y hora actual
+    const ahora = new Date();
+    const anio = ahora.getFullYear();
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+    const dia = String(ahora.getDate()).padStart(2, '0');
+    const horaPredeterminada = "09:00"; // Hora predeterminada para el turno
+
+    // Establecer el valor en formato "YYYY-MM-DDTHH:MM"
+    const valorPorDefecto = `${anio}-${mes}-${dia}T${horaPredeterminada}`;
+    horarioInput.value = valorPorDefecto;
+});
+
+function mostrarMensajeExito() {
+    alert("Paciente cargado con éxito");
+    return true; // Permite que el formulario se envíe
+}
