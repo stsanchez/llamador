@@ -2,8 +2,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
     const notificationsContainer = document.getElementById('notifications');
     const patientsList = document.getElementById('patients');
-    const notificationSound = document.getElementById('notification-sound');
     const enableSoundButton = document.getElementById('enable-sound');
+
+    let selectedVoice = null; // Almacena la voz seleccionada
+
+    // Cargar voces disponibles y seleccionar Google Español
+    const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log('Voces disponibles:', voices);
+
+        // Configura por defecto la voz Google Español (es-ES)
+        selectedVoice = voices.find(voice => voice.name.includes('Google español')) || voices.find(voice => voice.lang.startsWith('es')) || voices[0];
+
+        if (!selectedVoice) {
+            console.warn('No se encontró la voz Google Español (es-ES). Se usará la primera disponible.');
+        } else {
+            console.log(`Voz seleccionada: ${selectedVoice.name} (${selectedVoice.lang})`);
+        }
+    };
+
+    // Escuchar el evento onvoiceschanged para cargar voces
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    } else {
+        loadVoices();
+    }
 
     // Manejar la lista de pacientes inicial
     fetch('/pacientes')
@@ -33,12 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
         notificationsContainer.prepend(notificationElement);
         notificationElement.style.display = 'block';
 
-        if (notificationSound.dataset.enabled === 'true') {
-            notificationSound.play().catch(error => {
-                console.error('Error al reproducir el sonido:', error);
-            });
+        // Reproducir el nombre por el parlante con la voz seleccionada
+        const utterance = new SpeechSynthesisUtterance(`${data.nombre} ${data.apellido}, diríjase al consultorio ${data.nro_consultorio}`);
+        utterance.lang = 'es-ES'; // Configura el idioma a español
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
         }
+        window.speechSynthesis.speak(utterance);
 
+        // Limitar la cantidad de notificaciones
         if (notificationsContainer.children.length > 5) {
             notificationsContainer.removeChild(notificationsContainer.lastChild);
         }
@@ -52,12 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Habilitar el sonido
+    // Habilitar el sonido (si se desea mantener esta funcionalidad)
     enableSoundButton.addEventListener('click', () => {
-        notificationSound.play().then(() => {
-            notificationSound.dataset.enabled = 'true';
-        }).catch(error => {
-            console.error('Error al habilitar el sonido:', error);
-        });
+        const dummyUtterance = new SpeechSynthesisUtterance("Prueba de sonido habilitada");
+        dummyUtterance.lang = 'es-ES';
+        if (selectedVoice) {
+            dummyUtterance.voice = selectedVoice;
+        }
+        window.speechSynthesis.speak(dummyUtterance);
     });
 });
