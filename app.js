@@ -41,7 +41,9 @@ app.post('/register', async (req, res) => {
             dni: dni.toUpperCase(),
             horario: formatearFechaHora(horario),
             especialidad: especialidad.toUpperCase(),
-            nro_consultorio,
+            //Lo paso a string para que se inserte literalmente "004" y se lea asi cuando se notifique
+            //Tambien pase a varchar el campo de la db
+            nro_consultorio: nro_consultorio.toString(),
         };
 
         await pool.query(
