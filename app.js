@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const { Pool } = require('pg');
+require('dotenv').config();
 
 // Configuración de Express y Socket.IO
 const app = express();
@@ -17,6 +18,9 @@ const pool = new Pool({
     port: 5432,
 });
 
+// Carga el valor de CM desde las variables de entorno
+const CM_VALUE = process.env.CM_VALUE || 'COLEGIALES'; // Valor por defecto
+
 // Middleware
 app.use(express.static('public'));
 app.use(express.json());
@@ -29,7 +33,6 @@ const formatearFechaHora = (horario) => {
     return `${fechaActual} ${hora}`;
 };
 
-
 // Endpoint para registrar pacientes
 app.post('/register', async (req, res) => {
     const { nombre, apellido, dni, horario, especialidad, nro_consultorio } = req.body;
@@ -41,19 +44,15 @@ app.post('/register', async (req, res) => {
             dni: dni.toUpperCase(),
             horario: formatearFechaHora(horario),
             especialidad: especialidad.toUpperCase(),
-            //Lo paso a string para que se inserte literalmente "004" y se lea asi cuando se notifique
-            //Tambien pase a varchar el campo de la db
             nro_consultorio: nro_consultorio.toString(),
         };
 
         await pool.query(
-            'INSERT INTO pacientes (nombre, apellido, dni, horario, especialidad, nro_consultorio) VALUES ($1, $2, $3, $4, $5, $6)',
-            [paciente.nombre, paciente.apellido, paciente.dni, paciente.horario, paciente.especialidad, paciente.nro_consultorio]
+            'INSERT INTO pacientes (nombre, apellido, dni, horario, especialidad, nro_consultorio, cm) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+            [paciente.nombre, paciente.apellido, paciente.dni, paciente.horario, paciente.especialidad, paciente.nro_consultorio, CM_VALUE]
         );
 
-        // Emitir evento de Socket.IO para el nuevo paciente
         io.emit('nuevo_paciente', paciente);
-
         res.redirect('/register.html');
     } catch (err) {
         console.error('Error al registrar paciente:', err);
@@ -61,14 +60,13 @@ app.post('/register', async (req, res) => {
     }
 });
 
-
 // Endpoint para obtener información del paciente por DNI
 app.get('/paciente', async (req, res) => {
     const { dni } = req.query;
     try {
         const { rows } = await pool.query(
-            'SELECT nombre, apellido FROM pacientes WHERE dni = $1',
-            [dni]
+            'SELECT nombre, apellido FROM pacientes WHERE dni = $1 AND cm = $2',
+            [dni, CM_VALUE]
         );
 
         if (rows.length > 0) {
@@ -87,8 +85,8 @@ app.get('/llamar/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const { rows } = await pool.query(
-            'SELECT nombre, apellido, especialidad, nro_consultorio FROM pacientes WHERE id = $1',
-            [id]
+            'SELECT nombre, apellido, especialidad, nro_consultorio FROM pacientes WHERE id = $1 AND cm = $2',
+            [id, CM_VALUE]
         );
 
         if (rows.length > 0) {
@@ -108,10 +106,11 @@ app.get('/pacientes', async (req, res) => {
     const { nro_consultorio } = req.query;
 
     try {
-        const values = nro_consultorio ? [nro_consultorio] : [];
+        const values = nro_consultorio ? [nro_consultorio, CM_VALUE] : [CM_VALUE];
         const query = `
             SELECT * FROM pacientes 
-            WHERE atendido = FALSE ${nro_consultorio ? 'AND nro_consultorio = $1' : ''} 
+            WHERE atendido = FALSE AND cm = $${nro_consultorio ? '2' : '1'} 
+            ${nro_consultorio ? 'AND nro_consultorio = $1' : ''} 
             ORDER BY horario ASC
         `;
         const { rows } = await pool.query(query, values);
@@ -133,8 +132,8 @@ app.patch('/atendido/:id', async (req, res) => {
 
     try {
         await pool.query(
-            'UPDATE pacientes SET atendido = TRUE, motivo = $1 WHERE id = $2',
-            [motivo, id]
+            'UPDATE pacientes SET atendido = TRUE, motivo = $1 WHERE id = $2 AND cm = $3',
+            [motivo, id, CM_VALUE]
         );
         io.emit('actualizar_lista');
         res.status(200).send(`Paciente actualizado como ${motivo}`);
@@ -151,5 +150,5 @@ io.on('connection', (socket) => {
 });
 
 // Iniciar el servidor
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 server.listen(PORT, '0.0.0.0', () => console.log(`Servidor escuchando en el puerto ${PORT}`));
