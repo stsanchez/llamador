@@ -11,11 +11,11 @@ const io = socketIo(server);
 
 // Configuración de la conexión a la base de datos PostgreSQL
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'entrega_equipos',
-    password: 'admin1234',
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 });
 
 // Carga el valor de CM desde las variables de entorno
