@@ -16,11 +16,10 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    
 });
 
 // Carga el valor de CM desde las variables de entorno
-const CM_VALUE = process.env.CM_VALUE || 'COLEGIALES'; // Valor por defecto
+const CM_VALUE = process.env.CM_VALUE // Valor por defecto
 
 // Middleware
 app.use(express.static('public'));
