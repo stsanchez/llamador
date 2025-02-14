@@ -21,7 +21,7 @@ const pool = new Pool({
 // Carga el valor de CM desde las variables de entorno
 const CM_VALUE = process.env.CM_VALUE // Valor por defecto
 
-// Middleware
+// Middlewareeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
