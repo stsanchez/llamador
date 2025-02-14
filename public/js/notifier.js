@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const patientsList = document.getElementById('patients');
     const enableSoundButton = document.getElementById('enable-sound');
 
-    let selectedVoice = null; // Almacena la voz seleccionada
+    let selectedVoice = null;
 
     // Cargar voces disponibles y seleccionar Google Español
     const loadVoices = () => {
@@ -27,6 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         loadVoices();
     }
+
+    // Obtener el elemento h1 *ANTES* de usarlo
+    const cmValueElement = document.getElementById('cm-value');
+
+    // Obtener y mostrar CM_VALUE
+    fetch('/api/cm_value')
+    .then(response => response.json())
+    .then(data => {
+        cmValueElement.textContent = "CENTRO MÉDICO " + data.cmValue; // Concatenar la frase
+    })
+    .catch(error => {
+        console.error('Error al obtener CM_VALUE:', error);
+        cmValueElement.textContent = 'CENTRO MÉDICO Valor no disponible'; // Mensaje con la frase
+    });
 
     // Manejar la lista de pacientes inicial
     fetch('/pacientes')

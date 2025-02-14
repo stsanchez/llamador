@@ -15,28 +15,55 @@ body {
 /* Contenedor principal */
 #container {
     display: flex;
-    width: 90%; /* Se amplía ligeramente el contenedor */
-    height: calc(100% - 50px); /* Ajuste para dejar espacio para el botón */
-    max-width: 1400px; /* Ampliación máxima */
+    width: 90%;
+    height: calc(100% - 80px);
+    max-width: 1400px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
     background-color: #fff;
 }
 
-/* Encabezado */
 #header {
     width: 100%;
     background-color: #fff;
     display: flex;
-    justify-content: center;
-    padding: 10px;
+    align-items: center; /* Alinea verticalmente */
+    padding: 5px 10px; /* Reduce el padding vertical para hacerlo más compacto */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 70px; /* Altura fija para el header */
 }
 
 #logo {
-    max-height: 60px;
+    max-height: 50px; /* Reduce la altura máxima del logo */
+    margin-right: 10px; /* Espacio entre logo y texto */
 }
+
+#cm-value {
+    font-size: 1.2em; /* Reduce el tamaño de la fuente */
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    flex-grow: 1; /* Permite que el texto se expanda */
+    white-space: nowrap; /* Evita que el texto se corte y pase a la siguiente línea */
+    overflow: hidden; /* Oculta el texto que se desborda */
+    text-overflow: ellipsis; /* Agrega puntos suspensivos (...) si el texto se desborda */
+}
+#enable-sound {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute; /* Use absolute positioning to place it */
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%); /* Adjust vertical centering */
+    right: 10px; /* Position on the right */
+}
+
+#enable-sound img {
+    width: 20px;
+    height: 20px;
+}
+
 
 /* Lista de espera */
 #patient-list {
@@ -50,14 +77,14 @@ body {
 #patient-list h2 {
     margin-top: 0;
     color: #007BFF;
-    font-size: 2.0em; /* Tamaño de fuente más grande */
+    font-size: 2.0em;
 }
 
 #patients {
     list-style: none;
     padding: 0;
-    font-size: 1.3em; /* Agrandar el texto de la lista */
-    font-weight: bold; /* Texto en negrita para mayor visibilidad */
+    font-size: 1.3em;
+    font-weight: bold;
 }
 
 #patients li {
@@ -81,30 +108,20 @@ body {
     overflow-y: auto;
 }
 
-#notifications {
-    flex: 2;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    overflow-y: auto;
-}
-
 /* Estilo de la notificación */
 .notification {
     background-color: #28a745;
     color: white;
-    padding: 30px 40px; /* Aumenta el padding para dar más espacio */
+    padding: 30px 40px;
     margin: 20px 0;
-    border-radius: 8px; /* Bordes más redondeados */
-    width: 90%; /* Hace que la notificación ocupe más espacio */
-    max-width: 1000px; /* Limita el tamaño máximo */
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
     text-align: center;
-    font-size: 2em; /* Aumenta el tamaño de la fuente */
-    font-weight: bold; /* Texto en negrita para mayor visibilidad */
-    display: none; /* Ocultar inicialmente */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Añade sombra para más contraste */
+    font-size: 2em;
+    font-weight: bold;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     animation: fadeInOut 10s ease-out;
 }
 
@@ -114,19 +131,3 @@ body {
     90% { opacity: 1; }
     100% { opacity: 0; }
 }
-
-#enable-sound {
-    background: none;
-    border: none;
-    position: fixed;
-    bottom: 10px; /* Ajusta según tu diseño */
-    right: 10px; /* Ajusta según tu diseño */
-    cursor: pointer;
-}
-
-#enable-sound img {
-    width: 20px; /* Tamaño pequeño */
-    height: 20px; /* Tamaño pequeño */
-}
-
-
