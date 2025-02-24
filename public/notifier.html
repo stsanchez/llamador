@@ -7,26 +7,26 @@
 <body>
     <div id="header">
         <img id="logo" src="./images/logo_emer.jpeg" alt="Logo de la Empresa">
-        
+        <h1 id="cm-value">CENTRO MÉDICO </h1> </div>
     </div>
-    <div id="container">
-        <div id="patient-list">
-            <h2>En espera</h2>
-            <ul id="patients"></ul>
+    <div id="content">  <div id="video-container">
+            <video id="video-player" autoplay muted loop>
+                <source src="Cápsula 1 - Sabías que_V5.mp4" type="video/mp4">
+                Tu navegador no soporta la reproducción de videos.
+            </video>
         </div>
-        <div id="notifications"></div>
+        <div id="notifications">
+            <h2>Notificaciones</h2>
+            <ul id="notification-list"></ul>
+        </div>
     </div>
 
     <audio id="notification-sound" src="./sounds/dindong.mp3" preload="auto"></audio>
     <button id="enable-sound" title="Habilitar sonido">
         <img src="./images/sound.png" alt="Habilitar sonido">
     </button>
-    
-
-    
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/notifier.js"></script>
-    
 </body>
 </html>
